@@ -52,8 +52,8 @@ RUN curl -L -o /etc/yum.repos.d/beaker-client.repo \
         mkdir -p ${HOME}/bin/ && \
         chmod -R u+x ${HOME}/bin && \
         chgrp -R ${UID}.0 ${HOME} && \
-        chmod -R g=u ${HOME} \
-        #chmod -R g=u ${HOME} /etc/passwd; \
+        chmod -R g=u ${HOME} && \
+        chmod -R g=u /etc/passwd; \
         (cd /lib/systemd/system/sysinit.target.wants/; for i in *; \
         do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \
         rm -f /lib/systemd/system/multi-user.target.wants/*; \
