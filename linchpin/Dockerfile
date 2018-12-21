@@ -4,7 +4,7 @@ LABEL name="contrainfra/linchpin" \
       version="1.6.5" \
       description="LinchPin executable container running the latest Fedora release"
 
-ARG install_location='linchpin'
+ARG install_location='.'
 ARG git_project='https://github.com/CentOS-PaaS-SIG/linchpin'
 ARG git_branch='develop'
 
