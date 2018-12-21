@@ -32,7 +32,7 @@ RUN curl -L -o /etc/yum.repos.d/beaker-client.repo \
         libxml2-python \
         krb5-workstation \
         libselinux-python \
-        && dnf clean all; \
+        && dnf clean all -y; \
     if [ "${install_location}" == "." ]; then \
         if [[ ${git_branch} == PR-* ]]; then \
             git clone ${git_project} lp; \
@@ -50,7 +50,7 @@ RUN curl -L -o /etc/yum.repos.d/beaker-client.repo \
         pip install ${install_location}; \
         pip install ${install_location}[beaker]; \
         mkdir -p ${HOME}/bin/ && \
-        chmod -R g+x ${HOME}/bin && \
+        chmod -R u+x ${HOME}/bin && \
         chgrp -R ${UID}.0 ${HOME} && \
         #chmod -R g=u ${HOME} && \
         chmod -R g=u ${HOME} /etc/passwd; \
