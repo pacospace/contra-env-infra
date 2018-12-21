@@ -50,7 +50,7 @@ RUN curl -L -o /etc/yum.repos.d/beaker-client.repo \
         pip install ${install_location}; \
         pip install ${install_location}[beaker]; \
         mkdir -p ${HOME}/bin/ && \
-        chmod -R ug+x ${HOME}/bin && \
+        chmod -R g+x ${HOME}/bin && \
         chgrp -R ${UID}.0 ${HOME} && \
         #chmod -R g=u ${HOME} && \
         chmod -R g=u ${HOME} /etc/passwd; \
