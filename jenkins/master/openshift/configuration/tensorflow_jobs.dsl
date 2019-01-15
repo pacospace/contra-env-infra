@@ -26,7 +26,7 @@ pipelineJob(single_Build_job) {
   }
 }
 
-pipelineJob(single_Build_job) {
+pipelineJob(build_job) {
   properties {
     githubProjectUrl('https://github.com/tensorflow/tensorflow/')
   }
