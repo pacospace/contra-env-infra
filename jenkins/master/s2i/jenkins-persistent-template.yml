@@ -2,7 +2,7 @@
 kind: Template
 apiVersion: v1
 metadata:
-  name: jenkins-persistent
+  name: tf-jenkins-persistent
   creationTimestamp:
   annotations:
     openshift.io/display-name: Jenkins (Persistent)
@@ -27,10 +27,14 @@ objects:
   metadata:
     labels:
       app: jenkins
-    name: jenkins
+      appName: ${JENKINS_SERVICE_NAME}
+    name: tf-jenkins
 - kind: Route
   apiVersion: v1
   metadata:
+    labels:
+      app: jenkins
+      appName: "${JENKINS_SERVICE_NAME}"
     name: "${JENKINS_SERVICE_NAME}"
     creationTimestamp:
   spec:
@@ -55,12 +59,13 @@ objects:
   metadata:
     labels:
       app: jenkins
-    name: jenkins
+      appName: ${JENKINS_SERVICE_NAME}
+    name: tf-jenkins
   spec:
     output:
       to:
         kind: ImageStreamTag
-        name: jenkins:latest
+        name: tf-jenkins:latest
     resources:
       limits:
         memory: ${MEMORY_LIMIT}
@@ -89,6 +94,9 @@ objects:
 - kind: DeploymentConfig
   apiVersion: v1
   metadata:
+    labels:
+      app: jenkins
+      appName: "${JENKINS_SERVICE_NAME}"
     name: "${JENKINS_SERVICE_NAME}"
     creationTimestamp:
   spec:
@@ -114,6 +122,7 @@ objects:
         creationTimestamp:
         labels:
           name: "${JENKINS_SERVICE_NAME}"
+          appName: "${JENKINS_SERVICE_NAME}"
       spec:
         serviceAccountName: "${JENKINS_SERVICE_NAME}"
         containers:
@@ -178,6 +187,7 @@ objects:
           resources:
             limits:
               memory: "${MEMORY_LIMIT}"
+              cpu: "${CPU_LIMIT}"
           volumeMounts:
           - name: "${JENKINS_SERVICE_NAME}-data"
             mountPath: "/var/lib/jenkins"
@@ -196,12 +206,18 @@ objects:
 - kind: ServiceAccount
   apiVersion: v1
   metadata:
+    labels:
+      app: jenkins
+      appName: "${JENKINS_SERVICE_NAME}"
     name: "${JENKINS_SERVICE_NAME}"
     annotations:
       serviceaccounts.openshift.io/oauth-redirectreference.jenkins: '{"kind":"OAuthRedirectReference","apiVersion":"v1","reference":{"kind":"Route","name":"${JENKINS_SERVICE_NAME}"}}'
 - kind: RoleBinding
   apiVersion: v1
   metadata:
+    labels:
+      app: jenkins
+      appName: ${JENKINS_SERVICE_NAME}
     name: "${JENKINS_SERVICE_NAME}_edit"
   groupNames:
   subjects:
@@ -212,6 +228,9 @@ objects:
 - kind: Service
   apiVersion: v1
   metadata:
+    labels:
+      app: jenkins
+      appName: "${JENKINS_SERVICE_NAME}"
     name: "${JNLP_SERVICE_NAME}"
   spec:
     ports:
@@ -227,6 +246,9 @@ objects:
 - kind: Service
   apiVersion: v1
   metadata:
+    labels:
+      app: jenkins
+      appName: "${JENKINS_SERVICE_NAME}"
     name: "${JENKINS_SERVICE_NAME}"
     annotations:
       service.alpha.openshift.io/dependencies: '[{"name": "${JNLP_SERVICE_NAME}",
@@ -258,11 +280,11 @@ parameters:
 - name: JENKINS_SERVICE_NAME
   displayName: Jenkins Service Name
   description: The name of the OpenShift Service exposed for the Jenkins container.
-  value: jenkins
+  value: tf-jenkins
 - name: JNLP_SERVICE_NAME
   displayName: Jenkins JNLP Service Name
   description: The name of the service used for master/slave communication.
-  value: jenkins-jnlp
+  value: tf-jenkins-jnlp
 - name: ENABLE_OAUTH
   displayName: Enable OAuth in Jenkins
   description: Whether to enable OAuth OpenShift integration. If false, the static
@@ -272,6 +294,10 @@ parameters:
   displayName: Memory Limit
   description: Maximum amount of memory the container can use.
   value: 4Gi
+- name: CPU_LIMIT
+  displayName: cpu Limit
+  description: Maximum amount of cpu the container can use.
+  value: '1'
 - name: VOLUME_CAPACITY
   displayName: Volume Capacity
   description: Volume space available for data, e.g. 512Mi, 2Gi.
@@ -284,7 +310,7 @@ parameters:
 - name: JENKINS_IMAGE_STREAM_TAG
   displayName: Jenkins ImageStreamTag
   description: Name of the ImageStreamTag to be used for the Jenkins image.
-  value: jenkins:latest
+  value: tf-jenkins:latest
 - name: LOAD_SEED_JOB
   displayName: Load seed job
   description: Whether to load a dsl seed job
@@ -322,4 +348,4 @@ parameters:
   description: The database to use for metrics
   value: db0
 labels:
-  template: jenkins-persistent
+  template: tf-jenkins-persistent
