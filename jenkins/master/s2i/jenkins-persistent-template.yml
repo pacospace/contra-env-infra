@@ -318,7 +318,7 @@ parameters:
 - name: DSL_JOB_REPO
   displayName: DSL job repo
   description: The repository of dsl jobs
-  value: 'CentOS-PaaS-SIG/contra-env-sample-project'
+  value: 'thoth-station/contra-env-infra'
 - name: DSL_REPO_BRANCH
   displayName: DSL repo branch
   description: The branch to use for job dsl repository
