@@ -42,11 +42,12 @@ pipelineJob(build_job) {
       genericHeaderVariables {
         genericHeaderVariable {
           key("X-GitHub-Event")
+          regexpFilter("")
         }
       }
       token('')
       regexpFilterText("\$x_github_event")
-      regexpFilterExpression("^release$")
+      regexpFilterExpression("^release\$")
     }
   }
   definition {
@@ -63,5 +64,5 @@ pipelineJob(build_job) {
   }
 }
 
-queue(single_job)
+queue(single_Build_job)
 queue(build_job)
